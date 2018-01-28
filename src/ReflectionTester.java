@@ -37,11 +37,7 @@ public class ReflectionTester {
 		}
 		
 		//Reflection reflection1 = new Reflection();
-		//reflection1.analyzeInstanceFields("Vehicle");
-		
-		System.out.println(v1.toString());
-		
-		
+		//reflection1.analyzeInstanceFields("Vehicle");		
 
 	}
 

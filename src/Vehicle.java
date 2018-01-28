@@ -75,7 +75,7 @@ public class Vehicle {
 	 * @param weight the weight to set
 	 */
 	public void setWeight(double weight) {
-		if (weight <= 0.0) {
+		if (weight > 0.0) {
 			this.weight = weight;
 		}
 	}
@@ -91,7 +91,7 @@ public class Vehicle {
 	 * @param engineSize the engineSize to set
 	 */
 	public void setEngineSize(double engineSize) {
-		if (engineSize <= 0.0) {
+		if (engineSize > 0.0) {
 			this.engineSize = engineSize;			
 		}
 	}
@@ -107,7 +107,7 @@ public class Vehicle {
 	 * @param numberOfDoors the numberOfDoors to set
 	 */
 	public void setNumberOfDoors(int numberOfDoors) {
-		if (numberOfDoors <= 0) {
+		if (numberOfDoors > 0) {
 			this.numberOfDoors = numberOfDoors;
 		}
 	}

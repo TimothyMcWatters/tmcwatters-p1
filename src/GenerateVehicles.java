@@ -28,9 +28,9 @@ public class GenerateVehicles {
 		String make = generateMake();
 		String model = generateModel();
 		double weight = generateWeight(model);
-		double engineSize = generateEngineSize();
-		int numberOfDoors = generateNumberOfDoors();
-		boolean isImport = generateIsImport();
+		double engineSize = generateEngineSize(model);
+		int numberOfDoors = generateNumberOfDoors(model);
+		boolean isImport = generateIsImport(make);
 		
 		Vehicle vehicle = new Vehicle(make, model, weight, engineSize, numberOfDoors, isImport);
 		return vehicle;		
@@ -95,23 +95,37 @@ public class GenerateVehicles {
 	
 	private double generateWeight(String model) {
 		if (model.equals("compact")) {
-			return 1500 + (2000 - 1500) * randomGenerator.nextDouble();
+			return (double) Math.round((1500 + (2000 - 1500) * randomGenerator.nextDouble()) * 100) / 100;
 		} else if (model.equals("intermediate")) {
-			return 2000 + (2500 - 2000) * randomGenerator.nextDouble();
+			return (double) Math.round((2000 + (2500 - 2000) * randomGenerator.nextDouble()) * 100) / 100;
 		} else {
-			return 2500 + (4000 - 2500) * randomGenerator.nextDouble();
+			return (double) Math.round((2500 + (4000 - 2500) * randomGenerator.nextDouble()) * 100) / 100;
 		}
 	}
 	
-	private double generateEngineSize() {
-		return 0.0;
+	private double generateEngineSize(String model) {
+		if (model.equals("compact")) {
+			return (double) Math.round((90 + (150 - 90) * randomGenerator.nextDouble()) * 100) / 100;
+		} else if (model.equals("intermediate")) {
+			return (double) Math.round((150 + (250 - 150) * randomGenerator.nextDouble()) * 100) / 100;
+		} else {
+			return (double) Math.round((250 + (400 - 250) * randomGenerator.nextDouble()) * 100) / 100;
+		}
 	}
 	
-	private int generateNumberOfDoors() {
-		return 0;
+	private int generateNumberOfDoors(String model) {
+		if (model.equals("compact")) {
+			return 2;
+		} else {
+			return 4;
+		}
 	}
 	
-	private boolean generateIsImport() {
-		return false;
+	private boolean generateIsImport(String make) {
+		if (make.equals("Chevy") || make.equals("Ford"))  {
+			return false;
+		} else {
+			return true;
+		}
 	}
 }
