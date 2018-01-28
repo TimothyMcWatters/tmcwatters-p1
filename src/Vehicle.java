@@ -10,12 +10,14 @@
  * and the Java Reflection API, and automates database creation from class definitions
  * and instances.
  */
+
 public class Vehicle {
 	private String make; 
 	private String model;
 	private double weight;
 	private double engineSize;
 	private int numberOfDoors;
+	private boolean isImport;
 	
 	/**
 	 * @param make
@@ -23,14 +25,15 @@ public class Vehicle {
 	 * @param weight
 	 * @param engineSize
 	 * @param numberOfDoors
+	 * @param isImport
 	 */
-	public Vehicle(String make, String model, double weight, double engineSize, int numberOfDoors) {
-		super();
+	public Vehicle(String make, String model, double weight, double engineSize, int numberOfDoors, boolean isImport) {
 		this.make = make;
 		this.model = model;
 		this.weight = weight;
 		this.engineSize = engineSize;
 		this.numberOfDoors = numberOfDoors;
+		this.isImport = isImport;
 	}
 	
 	/**
@@ -109,13 +112,27 @@ public class Vehicle {
 		}
 	}
 	
+	/**
+	 * @return the isImport
+	 */
+	public boolean isImport() {
+		return isImport;
+	}
+
+	/**
+	 * @param isImport the isImport to set
+	 */
+	public void setImport(boolean isImport) {
+		this.isImport = isImport;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Vehicle [make=" + make + ", model=" + model + ", weight=" + weight + ", engineSize=" + engineSize
-				+ ", numberOfDoors=" + numberOfDoors + "]";
+		return "Vehicle [make = " + make + ", model = " + model + ", weight = " + weight + ", engineSize = " + engineSize
+				+ ", numberOfDoors = " + numberOfDoors + ", isImport = " + isImport + "]";
 	}
 	
 }
