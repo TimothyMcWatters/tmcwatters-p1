@@ -28,6 +28,14 @@ public class ReflectionTester {
 		db1.insertIntoTable(tableName, tableValues); 
 		db1.readTable(tableName);
 		
+		GenerateVehicles gv1 = new GenerateVehicles();
+		gv1.populateVehicleList();
+
+		
+		for (int i = 0; i < 10; i ++) {
+			System.out.println(GenerateVehicles.vehicleList[i].toString());
+		}
+		
 		//Reflection reflection1 = new Reflection();
 		//reflection1.analyzeInstanceFields("Vehicle");
 		

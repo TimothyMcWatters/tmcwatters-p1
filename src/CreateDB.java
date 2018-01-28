@@ -10,7 +10,7 @@ import java.sql.Statement;
  * 
  * COP 4027 Advanced Computer Programming
  * Project 1
- * File Name: ReflectionTester.java
+ * File Name: CreateDB.java
  * 
  * This Program: Uses reflection to improve structure, works with Derby database
  * and the Java Reflection API, and automates database creation from class definitions
