@@ -23,9 +23,12 @@ public class CreateDB {
 	private Connection connection = null;
 	private Statement statement = null;
 	
+	/**
+	 * Loads the Database's embedded driver for use of Apache Derby
+	 */
 	private void loadDBDriver() {
 		try {
-			Class.forName(driver).newInstance();
+			Class.forName(driver);
 			System.out.println("Loaded the embedded driver.");
 		}
 		catch (Exception err ) {
@@ -35,6 +38,10 @@ public class CreateDB {
 		}
 	}
 	
+	/**
+	 * Creates a Derby Database
+	 * @param dbName = The name of the database to be created
+	 */
 	public void createDB(String dbName) {
 		loadDBDriver();
 		
@@ -50,10 +57,15 @@ public class CreateDB {
 		}
 	}
 	
+	/**
+	 * Creates a table in the Derby Database
+	 * @param tableName = The name of the database table to be created
+	 */
 	public void createTable(String tableName) {
 		try {
 			statement = connection.createStatement();
-
+//correct this line of code to only drop the table if needed
+			System.out.println("Correct CreateDB line 69");
 			statement.execute("DROP TABLE " + tableName);
 			
 			statement.execute("CREATE TABLE " + tableName +
@@ -66,7 +78,12 @@ public class CreateDB {
 			System.exit(0);
 		}
 	}
-		
+	
+	/**
+	 * Inserts a record into a Derby Database table
+	 * @param tableName = The name of the database table to be enter a record
+	 * @param tableValues = The String representation of the record to be inserted into the table
+	 */
 	public void insertIntoTable(String tableName, String tableValues) {
 		try {
 			System.out.println("Inserting values into table " + tableName);
@@ -80,6 +97,10 @@ public class CreateDB {
 		}
 	}
 	
+	/**
+	 * Displays (prints) a record from a Derby Database table's result set
+	 * @param resultSet = The result set from the Derby Database table to display
+	 */
 	private void displayRecord(ResultSet resultSet) throws SQLException {
 		String make = resultSet.getString("make");
 		String model = resultSet.getString("model");
@@ -88,9 +109,14 @@ public class CreateDB {
 		int numberOfDoors = resultSet.getInt("numberOfDoors");
 		boolean isImport = resultSet.getBoolean("isImport");
 		
-		System.out.println(make + ", " + model + ", " + weight + ", " + engineSize + ", " + numberOfDoors + ", " + isImport);
+		System.out.println(make + ", " + model + ", " + weight + ", " + engineSize + ", " 
+		+ numberOfDoors + ", " + isImport);
 	}
 	
+	/**
+	 * Reads a record from a Derby Database table and then calls upon displayRecord() method
+	 * @param tableName = The name of the Derby DB table to read
+	 */
 	public void readTable(String tableName) throws SQLException {
 		ResultSet resultSet = null;
 		resultSet = statement.executeQuery("SELECT make, model, weight, engineSize, numberOfDoors, isImport FROM " + tableName);

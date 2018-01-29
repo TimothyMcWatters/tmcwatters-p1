@@ -14,16 +14,24 @@ import java.util.Random;
  */
 
 public class GenerateVehicles {
-	public static final int VEHICLE_LIST_SIZE = 10;
+	public static final int VEHICLE_LIST_SIZE = 10; 
 	public static Vehicle[] vehicleList = new Vehicle[VEHICLE_LIST_SIZE];
 	Random randomGenerator = new Random();
 	
+	/**
+	 * Populates the array "vehicleList" with "VEHICLE_LIST_SIZE" elements of Vehicle 
+	 * objects by calling the createNewVehicle() method
+	 */
 	public void populateVehicleList() {
 		for (int i = 0; i < VEHICLE_LIST_SIZE; i++) {
 			vehicleList[i] = createNewVehicle();
 		}
 	}
-	
+
+	/**
+	 * Creates a new instance of Vehicle and populates its instance fields
+	 * calling random generator methods for each.
+	 */
 	private Vehicle createNewVehicle() {
 		String make = generateMake();
 		String model = generateModel();
@@ -36,6 +44,10 @@ public class GenerateVehicles {
 		return vehicle;		
 	}
 	
+	/**
+	 * Generates the make of a Vehicle object randomly from a predefined enumeration, and returns it.
+	 * @return make = The make of a Vehicle object
+	 */
 	private String generateMake() {
 		String make = "";
 		int caseNumber = randomGenerator.nextInt(5) + 1;
@@ -63,6 +75,10 @@ public class GenerateVehicles {
 		return make;
 	}
 	
+	/**
+	 * Generates the model of a Vehicle object randomly from a predefined enumeration, and returns it.
+	 * @return model = The model of a Vehicle object
+	 */
 	private String generateModel() {
 		String model = "";
 		int caseNumber = randomGenerator.nextInt(6) + 1;
@@ -93,6 +109,12 @@ public class GenerateVehicles {
 		return model;
 	}
 	
+	/**
+	 * Generates the weight of a Vehicle object randomly from a predefined range dependent
+	 * upon that Vehicle objects model, and returns it.
+	 * @param model = The model of a a Vehicle object used to determine the objects weight
+	 * @return weight = The weight of a Vehicle object
+	 */
 	private double generateWeight(String model) {
 		if (model.equals("compact")) {
 			return (double) Math.round((1500 + (2000 - 1500) * randomGenerator.nextDouble()) * 100) / 100;
@@ -103,6 +125,12 @@ public class GenerateVehicles {
 		}
 	}
 	
+	/**
+	 * Generates the engine size of a Vehicle object randomly from a predefined range dependent
+	 * upon that Vehicle objects model, and returns it.
+	 * @param model = The model of a a Vehicle object used to determine the objects engine size
+	 * @return engineSize = The size of a Vehicle object's engine in cubic inches
+	 */
 	private double generateEngineSize(String model) {
 		if (model.equals("compact")) {
 			return (double) Math.round((90 + (150 - 90) * randomGenerator.nextDouble()) * 100) / 100;
@@ -113,6 +141,12 @@ public class GenerateVehicles {
 		}
 	}
 	
+	/**
+	 * Generates the number of doors a Vehicle object has based
+	 * upon that Vehicle objects model, and returns it.
+	 * @param model = The model of a a Vehicle object used to determine the objects number of doors
+	 * @return numberOfDoors = The number of doors the Vehicle object has
+	 */
 	private int generateNumberOfDoors(String model) {
 		if (model.equals("compact")) {
 			return 2;
@@ -121,6 +155,12 @@ public class GenerateVehicles {
 		}
 	}
 	
+	/**
+	 * Generates a boolean representation on whether a Vehicle object is imported to the United States 
+	 * based upon that Vehicle objects make, and returns it.
+	 * @param make = The make of a a Vehicle object used to determine whether it is imported to the United States
+	 * @return boolean = The boolean representation of if a Vehicle object is imported to the United States
+	 */
 	private boolean generateIsImport(String make) {
 		if (make.equals("Chevy") || make.equals("Ford"))  {
 			return false;

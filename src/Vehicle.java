@@ -20,6 +20,7 @@ public class Vehicle {
 	private boolean isImport;
 	
 	/**
+	 * Parameterized constructor for the Vehicle Class
 	 * @param make
 	 * @param model
 	 * @param weight
