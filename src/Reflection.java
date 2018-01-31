@@ -1,4 +1,5 @@
  import java.lang.reflect.*;
+import java.util.ArrayList;
 
 /**
  * @author Timothy McWatters
@@ -14,27 +15,64 @@
  */
 
 public class Reflection {
+	//public ArrayList<String> instanceFieldTypes = new ArrayList<String>();
 	
-	public void analyzeInstanceFields(String className) {
+	public ArrayList<String> analyzeInstanceFields(String className) {
+		String word;
+		String type;
+		String instanceField;
+		String instanceFieldType;
+		ArrayList<String> instanceFields = new ArrayList<String>();
 		try {
-			Class c = Class.forName(className);
-			Field f[] = c.getDeclaredFields();
-	        System.out.println("fields:");
-	        for (int i = 0; i < f.length; i++)
-	          System.out.println("  " + f[i].toString());  
+			Class c1 = Class.forName(className);
+			Field f[] = c1.getDeclaredFields();
+	        for (int i = 0; i < f.length; i++) {
+	        	type = f[i].getType().getName();
+	        	instanceFieldType = type.substring(type.lastIndexOf('.') + 1);
+	        	instanceFields.add(instanceFieldType);
+	        	
+	        	word = f[i].toString();
+	        	instanceField = word.substring(word.lastIndexOf('.') + 1);
+	        	instanceFields.add(instanceField);
+	        }
 		}
 	    catch (Throwable e) {
 	    	System.err.println(e);
-	     }  
+	     } 
+		return instanceFields;
 	}
 	
-	public void getInstanceFieldValues(String className, Object object) {
-		//Class<?> classType = Class.forName(className);
-		//Field privateField = classType.class.getDeclaredField("type");
-		
-		// get the value of this private field
-		//String fieldValue = (String) privateField.get(object);
-		//System.out.println("fieldValue before set = " + fieldValue);
+	public void getInstanceFieldValues(String fieldName, Object object) {
+		try {
+			System.out.println("\nInstance Field Values Are: ");
+			
+			Class c2 = object.getClass();
+			Field privateField = c2.getDeclaredField(fieldName);
+			
+			String name = privateField.getName();
+			privateField.setAccessible(true);
+//String fieldValue = (String) privateField.get(object);
+			//System.out.println(fieldValue);
+		}
+	    catch (Throwable e) {
+	    	System.err.println(e);
+	     } 
 	}
 	
 }
+/***************************************************
+	public void getInstanceFieldValues(String className, Object object) {
+		try {
+			System.out.println("\nInstance Field Values Are: ");
+			Class c2 = Class.forName(className);
+			Field privateField = c2.getDeclaredField("make");
+			String name = privateField.getName();
+			privateField.setAccessible(true);
+			String fieldValue = (String) privateField.get(object);
+			System.out.println("fieldValue before set = " + fieldValue);
+		}
+	    catch (Throwable e) {
+	    	System.err.println(e);
+	     } 
+	}
+*********************************************************/

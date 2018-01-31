@@ -3,6 +3,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  * @author Timothy McWatters
@@ -61,15 +62,15 @@ public class CreateDB {
 	 * Creates a table in the Derby Database
 	 * @param tableName = The name of the database table to be created
 	 */
-	public void createTable(String tableName) {
+	public void createTable(String tableName, ArrayList<String> instanceFields) {
+		String tableInstanceFields = buildTableFieldString(instanceFields);
 		try {
 			statement = connection.createStatement();
 //correct this line of code to only drop the table if needed
-			System.out.println("Correct CreateDB line 69");
+			System.out.println("Correct CreateDB line 72, maybe \"DROP TABLE IF EXISTS \"?");
 			statement.execute("DROP TABLE " + tableName);
 			
-			statement.execute("CREATE TABLE " + tableName +
-					  "(make varchar(20), model varchar(20), weight double, engineSize double, numberOfDoors int, isImport boolean)");
+			statement.execute("CREATE TABLE " + tableName + tableInstanceFields);
 			System.out.println("Created '" + tableName + "' table.");
 		}
 		catch (SQLException err) {
@@ -77,6 +78,43 @@ public class CreateDB {
 			err.printStackTrace(System.err);
 			System.exit(0);
 		}
+	}
+	
+	/**
+	 * Builds the command to create a table using a Derby Database 
+	 * @param tableName = The name of the database table to be created
+	 * @param tableValues = An ArrayList<String> representation of the record to be inserted into the table
+	 */
+	public String buildTableFieldString(ArrayList<String> instanceFields) {
+		String value;
+		String valueString = "(";
+		String type;
+		for (int index = 0; index < instanceFields.size()/2; index++) {
+			value = instanceFields.get(index * 2 + 1);
+			valueString += "" + value;
+			
+			type = instanceFields.get(index * 2);
+			if (type.equalsIgnoreCase("String")) {
+				valueString += " varchar(50)";
+			}
+			else if (type.equalsIgnoreCase("int")) {
+				valueString += " int";
+			}
+			else if (type.equalsIgnoreCase("double")) {
+				valueString += " double";
+			}
+			else if (type.equalsIgnoreCase("boolean")) {
+				valueString += " boolean";
+			}
+			else {
+				valueString += "";
+			}
+			if ((index + 1) < (instanceFields.size()/2)) {
+				valueString += ", ";
+			}
+		}
+		valueString += ")";
+		return valueString;
 	}
 	
 	/**
