@@ -31,28 +31,27 @@ public class ReflectionTester {
 		db1.createDB(dbName);
 		db1.createTable(tableName, instanceFields);
 		
+		//create 10 Vehicle instances
+		GenerateVehicles gv1 = new GenerateVehicles();
+		gv1.populateVehicleList();
+//used for confirmation of vehicle generation... delete!		
+		for (int i = 0; i < 10; i ++) {
+			System.out.println(GenerateVehicles.vehicleList[i].toString());
+		}
+		System.out.println();
 		
-		//Vehicle v1 = new Vehicle("Chevy", "suv", 2250.00, 800.00, 4, false);
+		Vehicle v1 = new Vehicle("Chevy", "suv", 2250.00, 800.00, 4, false);
+		System.out.println(v1);
+		ArrayList<String> instanceFieldValues = reflection1.getInstanceFieldValues(v1);
+		
+		for (int index = 0; index < instanceFieldValues.size(); index++) {
+			System.out.println(instanceFieldValues.get(index));
+		}
+		
 		//String tableValues = "('Chevy', 'suv', 2250.00, 800.00, 4, false)";
 		//db1.insertIntoTable(tableName, tableValues); 
-		//db1.readTable(tableName);
-		
-		//GenerateVehicles gv1 = new GenerateVehicles();
-		//gv1.populateVehicleList();
+		//db1.readTable(tableName);		
 
-		
-		//for (int i = 0; i < 10; i ++) {
-		//	System.out.println(GenerateVehicles.vehicleList[i].toString());
-		//}
-		
-		
-	
-		//reflection1.getInstanceFieldValues("make", v1);
-		//reflection1.getInstanceFieldValues("model", v1);
-		//reflection1.getInstanceFieldValues("weight", v1);
-		//reflection1.getInstanceFieldValues("engineSize", v1);
-		//reflection1.getInstanceFieldValues("numberOfDoors", v1);
-		//reflection1.getInstanceFieldValues("isImport", v1);
 
 	}
 

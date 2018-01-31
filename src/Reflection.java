@@ -15,7 +15,6 @@ import java.util.ArrayList;
  */
 
 public class Reflection {
-	//public ArrayList<String> instanceFieldTypes = new ArrayList<String>();
 	
 	public ArrayList<String> analyzeInstanceFields(String className) {
 		String word;
@@ -42,37 +41,42 @@ public class Reflection {
 		return instanceFields;
 	}
 	
-	public void getInstanceFieldValues(String fieldName, Object object) {
+	public ArrayList<String> getInstanceFieldValues(Object object) {
+		String type;
+		String field;
+		String fieldValue = "";
+		String className = object.getClass().getName();
+		ArrayList<String> instanceFields = analyzeInstanceFields(className);
+		ArrayList<String> instanceFieldValues = new ArrayList<String>();
 		try {
-			System.out.println("\nInstance Field Values Are: ");
+			for (int index = 0; index < instanceFields.size()/2; index++) {
+				field = instanceFields.get(index * 2 + 1);
+				type = instanceFields.get(index * 2);
+
+				Field privateField = object.getClass().getDeclaredField(field);
+				privateField.setAccessible(true);
 			
-			Class c2 = object.getClass();
-			Field privateField = c2.getDeclaredField(fieldName);
-			
-			String name = privateField.getName();
-			privateField.setAccessible(true);
-//String fieldValue = (String) privateField.get(object);
-			//System.out.println(fieldValue);
+				if (type.equalsIgnoreCase("String")) {
+					fieldValue = (String) privateField.get(object);
+				}
+				else if (type.equalsIgnoreCase("int")) {
+					fieldValue = String.valueOf(privateField.get(object));
+				}
+				else if (type.equalsIgnoreCase("double")) {
+					fieldValue = String.valueOf(privateField.get(object));
+				}
+				else if (type.equalsIgnoreCase("boolean")) {
+					fieldValue = String.valueOf(privateField.get(object));
+				}
+				else {
+					//what do i wanna code here?
+				}
+				instanceFieldValues.add(fieldValue);
+			}
 		}
-	    catch (Throwable e) {
-	    	System.err.println(e);
-	     } 
+		catch (Throwable e) {
+			System.err.println(e);
+		} 
+		return instanceFieldValues;
 	}
-	
 }
-/***************************************************
-	public void getInstanceFieldValues(String className, Object object) {
-		try {
-			System.out.println("\nInstance Field Values Are: ");
-			Class c2 = Class.forName(className);
-			Field privateField = c2.getDeclaredField("make");
-			String name = privateField.getName();
-			privateField.setAccessible(true);
-			String fieldValue = (String) privateField.get(object);
-			System.out.println("fieldValue before set = " + fieldValue);
-		}
-	    catch (Throwable e) {
-	    	System.err.println(e);
-	     } 
-	}
-*********************************************************/
