@@ -71,6 +71,7 @@ public class Reflection {
 				else {
 					//what do i wanna code here?
 				}
+				instanceFieldValues.add(type);
 				instanceFieldValues.add(fieldValue);
 			}
 		}

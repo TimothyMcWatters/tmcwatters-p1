@@ -27,31 +27,22 @@ public class ReflectionTester {
 		//create a database
 		CreateDB db1 = new CreateDB();
 		
-		//create a SQL command and create a database table
+		//create a SQL command for database table creation and create a database table
 		db1.createDB(dbName);
 		db1.createTable(tableName, instanceFields);
 		
 		//create 10 Vehicle instances
 		GenerateVehicles gv1 = new GenerateVehicles();
 		gv1.populateVehicleList();
-//used for confirmation of vehicle generation... delete!		
-		for (int i = 0; i < 10; i ++) {
-			System.out.println(GenerateVehicles.vehicleList[i].toString());
-		}
-		System.out.println();
-		
-		Vehicle v1 = new Vehicle("Chevy", "suv", 2250.00, 800.00, 4, false);
-		System.out.println(v1);
-		ArrayList<String> instanceFieldValues = reflection1.getInstanceFieldValues(v1);
-		
-		for (int index = 0; index < instanceFieldValues.size(); index++) {
-			System.out.println(instanceFieldValues.get(index));
-		}
-		
-		//String tableValues = "('Chevy', 'suv', 2250.00, 800.00, 4, false)";
-		//db1.insertIntoTable(tableName, tableValues); 
-		//db1.readTable(tableName);		
 
+		//use reflection to analyze Vehicle class and extract the instance fields
+		for (int i = 0; i < 10; i ++) {
+			ArrayList<String> tableValues = reflection1.getInstanceFieldValues(GenerateVehicles.vehicleList[i]);
+			db1.insertIntoTable(tableName, tableValues);
+		}
+
+		//create a SQL command to read and display each of the records from a database table
+		db1.readTable(tableName, instanceFields);		
 
 	}
 

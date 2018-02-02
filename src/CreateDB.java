@@ -1,6 +1,7 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -59,6 +60,43 @@ public class CreateDB {
 	}
 	
 	/**
+	 * Builds a string for the fields used to create a table using a Derby Database 
+	 * @param instanceFields = An ArrayList<String> representation of the fields to build a string of values from
+	 * @return valueString = The String of fields used in a database table creation
+	 */
+	public String buildTableFieldString(ArrayList<String> instanceFields) {
+		String field;
+		String fieldString = "(";
+		String type;
+		for (int index = 0; index < instanceFields.size()/2; index++) {
+			field = instanceFields.get(index * 2 + 1);
+			fieldString += field;
+			
+			type = instanceFields.get(index * 2);
+			if (type.equalsIgnoreCase("String")) {
+				fieldString += " varchar(50)";
+			}
+			else if (type.equalsIgnoreCase("int")) {
+				fieldString += " int";
+			}
+			else if (type.equalsIgnoreCase("double")) {
+				fieldString += " double";
+			}
+			else if (type.equalsIgnoreCase("boolean")) {
+				fieldString += " boolean";
+			}
+			else {
+				fieldString += "";
+			}
+			if ((index + 1) < (instanceFields.size()/2)) {
+				fieldString += ", ";
+			}
+		}
+		fieldString += ")";
+		return fieldString;
+	}
+		
+	/**
 	 * Creates a table in the Derby Database
 	 * @param tableName = The name of the database table to be created
 	 */
@@ -71,6 +109,7 @@ public class CreateDB {
 			statement.execute("DROP TABLE " + tableName);
 			
 			statement.execute("CREATE TABLE " + tableName + tableInstanceFields);
+//place a log entry command here
 			System.out.println("Created '" + tableName + "' table.");
 		}
 		catch (SQLException err) {
@@ -79,59 +118,82 @@ public class CreateDB {
 			System.exit(0);
 		}
 	}
-	
+
 	/**
-	 * Builds the command to create a table using a Derby Database 
-	 * @param tableName = The name of the database table to be created
-	 * @param tableValues = An ArrayList<String> representation of the record to be inserted into the table
+	 * Builds a string for the values used to insert a record into a table using a Derby Database 
+	 * @param instanceFields = An ArrayList<String> representation of the fields to build a string of values from
+	 * @return valueString = The String of values used in a database record insertion
 	 */
-	public String buildTableFieldString(ArrayList<String> instanceFields) {
+	public String buildTableRecordString(ArrayList<String> instanceValues) {
 		String value;
 		String valueString = "(";
 		String type;
-		for (int index = 0; index < instanceFields.size()/2; index++) {
-			value = instanceFields.get(index * 2 + 1);
-			valueString += "" + value;
-			
-			type = instanceFields.get(index * 2);
+		for (int index = 0; index < instanceValues.size()/2; index++) {
+			value = instanceValues.get(index * 2 + 1);			
+			type = instanceValues.get(index * 2);
 			if (type.equalsIgnoreCase("String")) {
-				valueString += " varchar(50)";
-			}
-			else if (type.equalsIgnoreCase("int")) {
-				valueString += " int";
-			}
-			else if (type.equalsIgnoreCase("double")) {
-				valueString += " double";
-			}
-			else if (type.equalsIgnoreCase("boolean")) {
-				valueString += " boolean";
+				valueString += "'" + value + "'";
 			}
 			else {
-				valueString += "";
+				valueString += value;
 			}
-			if ((index + 1) < (instanceFields.size()/2)) {
+			if ((index + 1) < (instanceValues.size()/2)) {
 				valueString += ", ";
 			}
 		}
 		valueString += ")";
 		return valueString;
-	}
+	}	
 	
 	/**
 	 * Inserts a record into a Derby Database table
 	 * @param tableName = The name of the database table to be enter a record
 	 * @param tableValues = The String representation of the record to be inserted into the table
 	 */
-	public void insertIntoTable(String tableName, String tableValues) {
+	public void insertIntoTable(String tableName, ArrayList<String> instanceValues) {
+		String tableValues = buildTableRecordString(instanceValues);
 		try {
-			System.out.println("Inserting values into table " + tableName);
+			System.out.println("Inserting record into table " + tableName);
 			statement.execute("INSERT INTO " + tableName + " VALUES " + tableValues);
-			System.out.println("Values inserted");
+			System.out.println("Record inserted successfully.");
 		}
 		catch (SQLException err) {
 			System.err.println("SQL error.");
 			err.printStackTrace(System.err);
 			System.exit(0);
+		}
+	}
+
+	/**
+	 * Builds a string used to select a record from a Derby Database 
+	 * @param instanceFields = An ArrayList<String> representation of the fields to select a record from a table
+	 * @return valueString = The String of fields used in record selection
+	 */
+	public String buildTableSelectString(ArrayList<String> instanceFields) {
+		String field;
+		String selectString = "SELECT ";
+		for (int index = 0; index < instanceFields.size()/2; index++) {
+			field = instanceFields.get(index * 2 + 1);
+			selectString += field;
+			if ((index + 1) < (instanceFields.size()/2)) {
+				selectString += ", ";
+			}
+		}
+		selectString += " FROM ";
+		return selectString;
+	}			
+	
+	/**
+	 * Reads a record from a Derby Database table and then calls upon displayRecord() method
+	 * @param tableName = The name of the Derby DB table to read
+	 */
+	public void readTable(String tableName, ArrayList<String> instanceFields) throws SQLException {
+		String selectStatementString = buildTableSelectString(instanceFields);
+		ResultSet resultSet = null;
+		resultSet = statement.executeQuery(selectStatementString + tableName);
+		System.out.println("\nHere are all records from the table \"" + tableName + "\":");
+		while(resultSet.next()) {
+			displayRecord(resultSet);
 		}
 	}
 	
@@ -140,27 +202,16 @@ public class CreateDB {
 	 * @param resultSet = The result set from the Derby Database table to display
 	 */
 	private void displayRecord(ResultSet resultSet) throws SQLException {
-		String make = resultSet.getString("make");
-		String model = resultSet.getString("model");
-		double weight = resultSet.getDouble("weight");
-		double engineSize = resultSet.getDouble("engineSize");
-		int numberOfDoors = resultSet.getInt("numberOfDoors");
-		boolean isImport = resultSet.getBoolean("isImport");
-		
-		System.out.println(make + ", " + model + ", " + weight + ", " + engineSize + ", " 
-		+ numberOfDoors + ", " + isImport);
-	}
-	
-	/**
-	 * Reads a record from a Derby Database table and then calls upon displayRecord() method
-	 * @param tableName = The name of the Derby DB table to read
-	 */
-	public void readTable(String tableName) throws SQLException {
-		ResultSet resultSet = null;
-		resultSet = statement.executeQuery("SELECT make, model, weight, engineSize, numberOfDoors, isImport FROM " + tableName);
-		
-		while(resultSet.next()) {
-			displayRecord(resultSet);
+		ResultSetMetaData rsmd = resultSet.getMetaData();
+		while (resultSet.next()) {
+			for (int index = 1; index <= rsmd.getColumnCount(); index++) {
+				if (index > 1) {
+					System.out.print(", ");
+				}
+				String columnValue = resultSet.getString(index);
+				System.out.print(columnValue);
+			}
+			System.out.println();
 		}
 	}
 	
