@@ -1,4 +1,5 @@
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -114,11 +115,15 @@ public class CreateDB {
 		String tableInstanceFields = buildTableFieldString(instanceFields);
 		try {
 			statement = connection.createStatement();
-//correct this line of code to only drop the table if needed
-System.out.println("Correct CreateDB line 72, maybe \"DROP TABLE IF EXISTS \"?");
-statement.execute("DROP TABLE " + tableName);
-log.createLogEntry("DROP TABLE " + tableName);
-			
+			DatabaseMetaData databaseMetadata = connection.getMetaData();
+			ResultSet rs = databaseMetadata.getTables(null, null, tableName.toUpperCase() , null);
+			if (rs.next()) {
+				//Drops the table if it already exists 
+				//(the scope of this program only calls for a single instance of the table)
+				statement.execute("DROP TABLE " + tableName);
+				log.createLogEntry("DROP TABLE " + tableName);
+			}
+			//Create table
 			statement.execute("CREATE TABLE " + tableName + tableInstanceFields);
 			log.createLogEntry("CREATE TABLE " + tableName + tableInstanceFields);
 			System.out.println("Created '" + tableName + "' table.");
@@ -244,3 +249,30 @@ log.createLogEntry("DROP TABLE " + tableName);
 	}
 	
 }
+
+
+/**************************************	
+ /**
+ * Creates a table in the Derby Database
+ * @param tableName = The name of the database table to be created
+ *
+public void createTable(String tableName, ArrayList<String> instanceFields) {
+	String tableInstanceFields = buildTableFieldString(instanceFields);
+	try {
+		statement = connection.createStatement();
+//correct this line of code to only drop the table if needed
+System.out.println("Correct CreateDB line 72, maybe \"DROP TABLE IF EXISTS \"?");
+statement.execute("DROP TABLE " + tableName);
+log.createLogEntry("DROP TABLE " + tableName);
+		
+		statement.execute("CREATE TABLE " + tableName + tableInstanceFields);
+		log.createLogEntry("CREATE TABLE " + tableName + tableInstanceFields);
+		System.out.println("Created '" + tableName + "' table.");
+	}
+	catch (SQLException err) {
+		System.err.println("SQL error.");
+		err.printStackTrace(System.err);
+		System.exit(0);
+	}
+}
+*/

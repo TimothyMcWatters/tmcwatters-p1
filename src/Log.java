@@ -61,6 +61,7 @@ public class Log {
 	 */
 	public void createLogEntry(String logEntry) {
 		outputStream.println(logEntry);
+		outputStream.flush();
 	}
 	
 	/**

@@ -45,13 +45,11 @@ public class ReflectionTester {
 		//create a SQL command to read and display each of the records from a database table
 		db1.readTable(tableName, instanceFields);
 		
-		//closes the outputStream to the log file
-		db1.closeOutputStream();
-		
 		//read and display log file of SQL Operations performed
 		db1.printDBLog();
 		
-
+		//closes the outputStream to the log file
+		db1.closeOutputStream();
 
 	}
 
