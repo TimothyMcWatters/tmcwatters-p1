@@ -24,6 +24,8 @@ public class CreateDB {
 	private static final String protocol = "jdbc:derby:";
 	private Connection connection = null;
 	private Statement statement = null;
+	private Log log = null;
+	private String logName;
 	
 	/**
 	 * Loads the Database's embedded driver for use of Apache Derby
@@ -45,11 +47,17 @@ public class CreateDB {
 	 * @param dbName = The name of the database to be created
 	 */
 	public void createDB(String dbName) {
-		loadDBDriver();
+		//create log to log each SQL operation performed on this database
+		logName = dbName + "Log.txt";
+		log = new Log(logName);
+		log.createLog();
+		System.out.println(logName + " created.");
 		
+		loadDBDriver();
 		try {
 			System.out.println("Connecting to and creating the database...");
 			connection = DriverManager.getConnection(protocol + dbName + ";create=true");
+			log.createLogEntry(protocol + dbName + ";create=true");
 			System.out.println("Database has been created.");
 		}
 		catch (SQLException err) {
@@ -107,9 +115,10 @@ public class CreateDB {
 //correct this line of code to only drop the table if needed
 			System.out.println("Correct CreateDB line 72, maybe \"DROP TABLE IF EXISTS \"?");
 			statement.execute("DROP TABLE " + tableName);
+			log.createLogEntry("DROP TABLE " + tableName);
 			
 			statement.execute("CREATE TABLE " + tableName + tableInstanceFields);
-//place a log entry command here
+			log.createLogEntry("CREATE TABLE " + tableName + tableInstanceFields);
 			System.out.println("Created '" + tableName + "' table.");
 		}
 		catch (SQLException err) {
@@ -153,9 +162,9 @@ public class CreateDB {
 	public void insertIntoTable(String tableName, ArrayList<String> instanceValues) {
 		String tableValues = buildTableRecordString(instanceValues);
 		try {
-			System.out.println("Inserting record into table " + tableName);
 			statement.execute("INSERT INTO " + tableName + " VALUES " + tableValues);
-			System.out.println("Record inserted successfully.");
+			System.out.println("Record successfully inserted into table: " + tableName);
+			log.createLogEntry("INSERT INTO " + tableName + " VALUES " + tableValues);
 		}
 		catch (SQLException err) {
 			System.err.println("SQL error.");
@@ -191,6 +200,7 @@ public class CreateDB {
 		String selectStatementString = buildTableSelectString(instanceFields);
 		ResultSet resultSet = null;
 		resultSet = statement.executeQuery(selectStatementString + tableName);
+		log.createLogEntry(selectStatementString + tableName);
 		System.out.println("\nHere are all records from the table \"" + tableName + "\":");
 		while(resultSet.next()) {
 			displayRecord(resultSet);
@@ -213,6 +223,22 @@ public class CreateDB {
 			}
 			System.out.println();
 		}
+	}
+	
+	/**
+	 * Closes the database log's outputStream
+	 */
+	public void closeOutputStream() {
+		log.closeOutputStream();
+	}
+	
+	/**
+	 * Prints the database log
+	 * @param logName = the database log's name to print
+	 */
+	public void printDBLog() {
+		System.out.println("\n" + this.logName + " contains the following SQL operations performed: ");
+		this.log.printLog(this.logName);
 	}
 	
 }
