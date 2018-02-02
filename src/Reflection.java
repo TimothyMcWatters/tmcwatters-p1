@@ -16,6 +16,11 @@ import java.util.ArrayList;
 
 public class Reflection {
 	
+	/**
+	 * Creates a list of instance fields and their Types using reflect from a Class name
+	 * @param className = The name of the class to use reflection on 
+	 * @return instanceFields = An ArrayList<String> of the Class' instance fields and their Types
+	 */
 	public ArrayList<String> analyzeInstanceFields(String className) {
 		String word;
 		String type;
@@ -41,6 +46,11 @@ public class Reflection {
 		return instanceFields;
 	}
 	
+	/**
+	 * Creates a list of instance field values and their Types using reflection on an object
+	 * @param object = The object to use reflection on 
+	 * @return instanceFieldValues = An ArrayList<String> of the Class' instance field values and their Types
+	 */
 	public ArrayList<String> getInstanceFieldValues(Object object) {
 		String type;
 		String field;
@@ -69,7 +79,9 @@ public class Reflection {
 					fieldValue = String.valueOf(privateField.get(object));
 				}
 				else {
-					//what do i wanna code here?
+					String unsupportedType = type.getClass().getName();
+					System.out.println("ERROR: " + unsupportedType + " not supported");
+					fieldValue = "ERROR: " + unsupportedType + " not supported";
 				}
 				instanceFieldValues.add(type);
 				instanceFieldValues.add(fieldValue);

@@ -36,18 +36,22 @@ public class ReflectionTester {
 		gv1.populateVehicleList();
 
 		//use reflection to analyze Vehicle class and extract the instance fields
+		Vehicle[] vehicleList = gv1.getVehicleList();
 		for (int i = 0; i < 10; i ++) {
-			ArrayList<String> tableValues = reflection1.getInstanceFieldValues(GenerateVehicles.vehicleList[i]);
+			ArrayList<String> tableValues = reflection1.getInstanceFieldValues(vehicleList[i]);
 			db1.insertIntoTable(tableName, tableValues);
 		}
 
 		//create a SQL command to read and display each of the records from a database table
 		db1.readTable(tableName, instanceFields);
 		
+		//closes the outputStream to the log file
+		db1.closeOutputStream();
+		
 		//read and display log file of SQL Operations performed
 		db1.printDBLog();
 		
-		db1.closeOutputStream();
+
 
 	}
 

@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class GenerateVehicles {
 	public static final int VEHICLE_LIST_SIZE = 10; 
-	public static Vehicle[] vehicleList = new Vehicle[VEHICLE_LIST_SIZE];
+	private Vehicle[] vehicleList = new Vehicle[VEHICLE_LIST_SIZE];
 	Random randomGenerator = new Random();
 	
 	/**
@@ -27,10 +27,25 @@ public class GenerateVehicles {
 			vehicleList[i] = createNewVehicle();
 		}
 	}
+	
+	/**
+	 * @return the vehicleList
+	 */
+	public Vehicle[] getVehicleList() {
+		return vehicleList;
+	}
+
+	/**
+	 * @param vehicleList the vehicleList to set
+	 */
+	public void setVehicleList(Vehicle[] vehicleList) {
+		this.vehicleList = vehicleList;
+	}
 
 	/**
 	 * Creates a new instance of Vehicle and populates its instance fields
 	 * calling random generator methods for each.
+	 * @return vehicle = The vehicle object created
 	 */
 	private Vehicle createNewVehicle() {
 		String make = generateMake();
@@ -45,7 +60,7 @@ public class GenerateVehicles {
 	}
 	
 	/**
-	 * Generates the make of a Vehicle object randomly from a predefined enumeration, and returns it.
+	 * Generates the make of a Vehicle object randomly from predefined limits, and returns it.
 	 * @return make = The make of a Vehicle object
 	 */
 	private String generateMake() {
@@ -76,7 +91,7 @@ public class GenerateVehicles {
 	}
 	
 	/**
-	 * Generates the model of a Vehicle object randomly from a predefined enumeration, and returns it.
+	 * Generates the model of a Vehicle object randomly from predefined limits, and returns it.
 	 * @return model = The model of a Vehicle object
 	 */
 	private String generateModel() {

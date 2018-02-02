@@ -48,12 +48,15 @@ public class CreateDB {
 	 */
 	public void createDB(String dbName) {
 		//create log to log each SQL operation performed on this database
-		logName = dbName + "Log.txt";
+		logName = dbName + ".log";
 		log = new Log(logName);
 		log.createLog();
 		System.out.println(logName + " created.");
 		
+		//Loads the DB driver
 		loadDBDriver();
+		
+		//attempt to create the DB
 		try {
 			System.out.println("Connecting to and creating the database...");
 			connection = DriverManager.getConnection(protocol + dbName + ";create=true");
@@ -68,18 +71,17 @@ public class CreateDB {
 	}
 	
 	/**
-	 * Builds a string for the fields used to create a table using a Derby Database 
-	 * @param instanceFields = An ArrayList<String> representation of the fields to build a string of values from
-	 * @return valueString = The String of fields used in a database table creation
+	 * Builds a String used for the SQL operation: CREATE TABLE 
+	 * @param instanceFields = An ArrayList<String> representation of the fields to build the string
+	 * @return valueString = The resultant String of fields for CREATE TABLE SQL operation
 	 */
-	public String buildTableFieldString(ArrayList<String> instanceFields) {
+	private String buildTableFieldString(ArrayList<String> instanceFields) {
+		String type;
 		String field;
 		String fieldString = "(";
-		String type;
 		for (int index = 0; index < instanceFields.size()/2; index++) {
 			field = instanceFields.get(index * 2 + 1);
 			fieldString += field;
-			
 			type = instanceFields.get(index * 2);
 			if (type.equalsIgnoreCase("String")) {
 				fieldString += " varchar(50)";
@@ -113,9 +115,9 @@ public class CreateDB {
 		try {
 			statement = connection.createStatement();
 //correct this line of code to only drop the table if needed
-			System.out.println("Correct CreateDB line 72, maybe \"DROP TABLE IF EXISTS \"?");
-			statement.execute("DROP TABLE " + tableName);
-			log.createLogEntry("DROP TABLE " + tableName);
+System.out.println("Correct CreateDB line 72, maybe \"DROP TABLE IF EXISTS \"?");
+statement.execute("DROP TABLE " + tableName);
+log.createLogEntry("DROP TABLE " + tableName);
 			
 			statement.execute("CREATE TABLE " + tableName + tableInstanceFields);
 			log.createLogEntry("CREATE TABLE " + tableName + tableInstanceFields);
@@ -129,11 +131,11 @@ public class CreateDB {
 	}
 
 	/**
-	 * Builds a string for the values used to insert a record into a table using a Derby Database 
-	 * @param instanceFields = An ArrayList<String> representation of the fields to build a string of values from
-	 * @return valueString = The String of values used in a database record insertion
+	 * Builds a String used for the SQL operation: INSERT INTO  
+	 * @param instanceFields = An ArrayList<String> representation of the values to build the String
+	 * @return valueString = The resultant String of values for INSERT INTO SQL operation
 	 */
-	public String buildTableRecordString(ArrayList<String> instanceValues) {
+	private String buildTableRecordString(ArrayList<String> instanceValues) {
 		String value;
 		String valueString = "(";
 		String type;
@@ -155,9 +157,9 @@ public class CreateDB {
 	}	
 	
 	/**
-	 * Inserts a record into a Derby Database table
-	 * @param tableName = The name of the database table to be enter a record
-	 * @param tableValues = The String representation of the record to be inserted into the table
+	 * Inserts a record into a Database table
+	 * @param tableName = The name of the database table for record insertion
+	 * @param tableValues = An ArrayList<String> representation of the record to be inserted into the table
 	 */
 	public void insertIntoTable(String tableName, ArrayList<String> instanceValues) {
 		String tableValues = buildTableRecordString(instanceValues);
@@ -174,11 +176,11 @@ public class CreateDB {
 	}
 
 	/**
-	 * Builds a string used to select a record from a Derby Database 
-	 * @param instanceFields = An ArrayList<String> representation of the fields to select a record from a table
-	 * @return valueString = The String of fields used in record selection
+	 * Builds a String used for the SQL operation: SELECT  
+	 * @param instanceFields = An ArrayList<String> representation of the values to build the String
+	 * @return valueString = The resultant String of values for SELECT SQL operation
 	 */
-	public String buildTableSelectString(ArrayList<String> instanceFields) {
+	private String buildTableSelectString(ArrayList<String> instanceFields) {
 		String field;
 		String selectString = "SELECT ";
 		for (int index = 0; index < instanceFields.size()/2; index++) {
@@ -193,23 +195,8 @@ public class CreateDB {
 	}			
 	
 	/**
-	 * Reads a record from a Derby Database table and then calls upon displayRecord() method
-	 * @param tableName = The name of the Derby DB table to read
-	 */
-	public void readTable(String tableName, ArrayList<String> instanceFields) throws SQLException {
-		String selectStatementString = buildTableSelectString(instanceFields);
-		ResultSet resultSet = null;
-		resultSet = statement.executeQuery(selectStatementString + tableName);
-		log.createLogEntry(selectStatementString + tableName);
-		System.out.println("\nHere are all records from the table \"" + tableName + "\":");
-		while(resultSet.next()) {
-			displayRecord(resultSet);
-		}
-	}
-	
-	/**
-	 * Displays (prints) a record from a Derby Database table's result set
-	 * @param resultSet = The result set from the Derby Database table to display
+	 * Displays (prints) a record from a Database table's result set
+	 * @param resultSet = The result set from the Database table to display
 	 */
 	private void displayRecord(ResultSet resultSet) throws SQLException {
 		ResultSetMetaData rsmd = resultSet.getMetaData();
@@ -222,6 +209,21 @@ public class CreateDB {
 				System.out.print(columnValue);
 			}
 			System.out.println();
+		}
+	}
+	
+	/**
+	 * Reads a record from a Database table and then calls upon displayRecord() method
+	 * @param tableName = The name of the Derby DB table to read
+	 */
+	public void readTable(String tableName, ArrayList<String> instanceFields) throws SQLException {
+		String selectStatementString = buildTableSelectString(instanceFields);
+		ResultSet resultSet = null;
+		resultSet = statement.executeQuery(selectStatementString + tableName);
+		log.createLogEntry(selectStatementString + tableName);
+		System.out.println("\nHere are all records from the table \"" + tableName + "\":");
+		while(resultSet.next()) {
+			displayRecord(resultSet);
 		}
 	}
 	

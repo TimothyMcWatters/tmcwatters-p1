@@ -17,7 +17,7 @@ import java.util.Scanner;
 public class Log {
 	private String logName;
 	private PrintWriter outputStream = null;
-	public Scanner inputStream = null;
+	private Scanner inputStream = null;
 	
 	/**
 	 * Constructor for Log class
@@ -69,15 +69,13 @@ public class Log {
 	 */
 	public void printLog(String logName) {
 		try {
-			inputStream = new Scanner(new FileInputStream("VehiclesLog.txt"));
-			System.out.println("test");
+			inputStream = new Scanner(new FileInputStream(logName));
 		}
 		catch (FileNotFoundException e) {
 			System.out.println("WARNING: Log file not found.");
 			System.exit(0);
 		}
 		while (inputStream.hasNextLine()) {
-			System.out.println("test from " + logName);
 			System.out.println(inputStream.nextLine());
 		}
 		inputStream.close();
