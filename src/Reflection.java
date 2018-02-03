@@ -19,12 +19,13 @@ public class Reflection {
 	/**
 	 * Creates a list of instance fields and their Types using reflect from a Class name
 	 * @param className = The name of the class to use reflection on 
+	 * @param log = The log to log all SQL operations or failure to process an unsupported field Type
 	 * @return instanceFields = An ArrayList<String> of the Class' instance fields and their Types
 	 */
-	public ArrayList<String> analyzeInstanceFields(String className) {
+	public ArrayList<String> analyzeInstanceFields(String className, Log log) {
 		String word;
 		String type;
-		String instanceField;
+		String instanceField = "";
 		String instanceFieldType;
 		ArrayList<String> instanceFields = new ArrayList<String>();
 		try {
@@ -33,11 +34,15 @@ public class Reflection {
 	        for (int i = 0; i < f.length; i++) {
 	        	type = f[i].getType().getName();
 	        	instanceFieldType = type.substring(type.lastIndexOf('.') + 1);
-	        	instanceFields.add(instanceFieldType);
-	        	
-	        	word = f[i].toString();
-	        	instanceField = word.substring(word.lastIndexOf('.') + 1);
-	        	instanceFields.add(instanceField);
+        		word = f[i].toString();
+        		instanceField = word.substring(word.lastIndexOf('.') + 1);
+	        	if (instanceFieldType.equalsIgnoreCase("String") || instanceFieldType.equalsIgnoreCase("int") 
+	        				|| instanceFieldType.equalsIgnoreCase("double") || instanceFieldType.equalsIgnoreCase("boolean")) {
+	        		instanceFields.add(instanceFieldType);
+	        		instanceFields.add(instanceField);
+	        	} else {
+	        		log.createLogEntry("WARNING: The Instance Field: " + instanceField + " could not be processed because it is of Type: " + instanceFieldType);
+	        	}
 	        }
 		}
 	    catch (Throwable e) {
@@ -49,19 +54,20 @@ public class Reflection {
 	/**
 	 * Creates a list of instance field values and their Types using reflection on an object
 	 * @param object = The object to use reflection on 
+	 * @param log = The log to log all SQL operations or failure to process an unsupported field Type
 	 * @return instanceFieldValues = An ArrayList<String> of the Class' instance field values and their Types
 	 */
-	public ArrayList<String> getInstanceFieldValues(Object object) {
+	public ArrayList<String> getInstanceFieldValues(Object object, Log log) {
 		String type;
 		String field;
 		String fieldValue = "";
 		String className = object.getClass().getName();
-		ArrayList<String> instanceFields = analyzeInstanceFields(className);
+		ArrayList<String> instanceFields = analyzeInstanceFields(className, log);
 		ArrayList<String> instanceFieldValues = new ArrayList<String>();
 		try {
 			for (int index = 0; index < instanceFields.size()/2; index++) {
-				field = instanceFields.get(index * 2 + 1);
 				type = instanceFields.get(index * 2);
+				field = instanceFields.get(index * 2 + 1);
 
 				Field privateField = object.getClass().getDeclaredField(field);
 				privateField.setAccessible(true);
@@ -77,11 +83,6 @@ public class Reflection {
 				}
 				else if (type.equalsIgnoreCase("boolean")) {
 					fieldValue = String.valueOf(privateField.get(object));
-				}
-				else {
-					String unsupportedType = type.getClass().getName();
-					System.out.println("ERROR: " + unsupportedType + " not supported");
-					fieldValue = "ERROR: " + unsupportedType + " not supported";
 				}
 				instanceFieldValues.add(type);
 				instanceFieldValues.add(fieldValue);

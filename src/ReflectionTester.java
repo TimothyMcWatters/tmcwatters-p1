@@ -17,18 +17,19 @@ import java.util.ArrayList;
 public class ReflectionTester {
 
 	public static void main(String[] args) throws SQLException {
+		String classNameToAnalyze = "Vehicle";
 		String dbName = "Vehicles";
 		String tableName = "vehicles";
 		
+		//create a database
+		DatabaseActions db1 = new DatabaseActions();
+		Log log = db1.createDB(dbName);
+		
 		//use reflection to analyze Vehicle class and extract the instance fields
 		Reflection reflection1 = new Reflection();
-		ArrayList<String> instanceFields = reflection1.analyzeInstanceFields("Vehicle");
-		
-		//create a database
-		CreateDB db1 = new CreateDB();
+		ArrayList<String> instanceFields = reflection1.analyzeInstanceFields(classNameToAnalyze, log);
 		
 		//create a SQL command for database table creation and create a database table
-		db1.createDB(dbName);
 		db1.createTable(tableName, instanceFields);
 		
 		//create 10 Vehicle instances
@@ -38,7 +39,7 @@ public class ReflectionTester {
 		//use reflection to analyze Vehicle class and extract the instance fields
 		Vehicle[] vehicleList = gv1.getVehicleList();
 		for (int i = 0; i < 10; i ++) {
-			ArrayList<String> tableValues = reflection1.getInstanceFieldValues(vehicleList[i]);
+			ArrayList<String> tableValues = reflection1.getInstanceFieldValues(vehicleList[i], log);
 			db1.insertIntoTable(tableName, tableValues);
 		}
 
@@ -50,7 +51,6 @@ public class ReflectionTester {
 		
 		//closes the outputStream to the log file
 		db1.closeOutputStream();
-
 	}
 
 }

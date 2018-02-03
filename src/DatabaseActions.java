@@ -13,14 +13,14 @@ import java.util.ArrayList;
  * 
  * COP 4027 Advanced Computer Programming
  * Project 1
- * File Name: CreateDB.java
+ * File Name: DatabaseActions.java
  * 
  * This Program: Uses reflection to improve structure, works with Derby database
  * and the Java Reflection API, and automates database creation from class definitions
  * and instances.
  */
 
-public class CreateDB {
+public class DatabaseActions {
 	private static final String driver = "org.apache.derby.jdbc.EmbeddedDriver";
 	private static final String protocol = "jdbc:derby:";
 	private Connection connection = null;
@@ -47,7 +47,7 @@ public class CreateDB {
 	 * Creates a Derby Database
 	 * @param dbName = The name of the database to be created
 	 */
-	public void createDB(String dbName) {
+	public Log createDB(String dbName) {
 		//create log to log each SQL operation performed on this database
 		logName = dbName + ".log";
 		log = new Log(logName);
@@ -69,6 +69,7 @@ public class CreateDB {
 			err.printStackTrace(System.err);
 			System.exit(0);
 		}
+		return log;
 	}
 	
 	/**
@@ -205,7 +206,7 @@ public class CreateDB {
 	 */
 	private void displayRecord(ResultSet resultSet) throws SQLException {
 		ResultSetMetaData rsmd = resultSet.getMetaData();
-		while (resultSet.next()) {
+		do {
 			for (int index = 1; index <= rsmd.getColumnCount(); index++) {
 				if (index > 1) {
 					System.out.print(", ");
@@ -214,7 +215,7 @@ public class CreateDB {
 				System.out.print(columnValue);
 			}
 			System.out.println();
-		}
+		}  while (resultSet.next());
 	}
 	
 	/**
@@ -249,30 +250,3 @@ public class CreateDB {
 	}
 	
 }
-
-
-/**************************************	
- /**
- * Creates a table in the Derby Database
- * @param tableName = The name of the database table to be created
- *
-public void createTable(String tableName, ArrayList<String> instanceFields) {
-	String tableInstanceFields = buildTableFieldString(instanceFields);
-	try {
-		statement = connection.createStatement();
-//correct this line of code to only drop the table if needed
-System.out.println("Correct CreateDB line 72, maybe \"DROP TABLE IF EXISTS \"?");
-statement.execute("DROP TABLE " + tableName);
-log.createLogEntry("DROP TABLE " + tableName);
-		
-		statement.execute("CREATE TABLE " + tableName + tableInstanceFields);
-		log.createLogEntry("CREATE TABLE " + tableName + tableInstanceFields);
-		System.out.println("Created '" + tableName + "' table.");
-	}
-	catch (SQLException err) {
-		System.err.println("SQL error.");
-		err.printStackTrace(System.err);
-		System.exit(0);
-	}
-}
-*/
