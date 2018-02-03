@@ -40,7 +40,7 @@ public class ReflectionTester {
 		Vehicle[] vehicleList = gv1.getVehicleList();
 		for (int i = 0; i < 10; i ++) {
 			ArrayList<String> tableValues = reflection1.getInstanceFieldValues(vehicleList[i], log);
-			db1.insertIntoTable(tableName, tableValues);
+			db1.addRecordsToTable(tableName, tableValues);
 		}
 
 		//create a SQL command to read and display each of the records from a database table

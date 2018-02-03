@@ -16,7 +16,7 @@ import java.util.Random;
 public class GenerateVehicles {
 	public static final int VEHICLE_LIST_SIZE = 10; 
 	private Vehicle[] vehicleList = new Vehicle[VEHICLE_LIST_SIZE];
-	Random randomGenerator = new Random();
+	private Random randomGenerator = new Random();
 	
 	/**
 	 * Populates the array "vehicleList" with "VEHICLE_LIST_SIZE" elements of Vehicle 

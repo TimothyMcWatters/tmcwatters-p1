@@ -26,7 +26,7 @@ public class DatabaseActions {
 	private Connection connection = null;
 	private Statement statement = null;
 	private Log log = null;
-	private String logName;
+	private String logName = "dbOperations.log";
 	
 	/**
 	 * Loads the Database's embedded driver for use of Apache Derby
@@ -49,7 +49,6 @@ public class DatabaseActions {
 	 */
 	public Log createDB(String dbName) {
 		//create log to log each SQL operation performed on this database
-		logName = dbName + ".log";
 		log = new Log(logName);
 		log.createLog();
 		System.out.println(logName + " created.");
@@ -167,7 +166,7 @@ public class DatabaseActions {
 	 * @param tableName = The name of the database table for record insertion
 	 * @param tableValues = An ArrayList<String> representation of the record to be inserted into the table
 	 */
-	public void insertIntoTable(String tableName, ArrayList<String> instanceValues) {
+	public void addRecordsToTable(String tableName, ArrayList<String> instanceValues) {
 		String tableValues = buildTableRecordString(instanceValues);
 		try {
 			statement.execute("INSERT INTO " + tableName + " VALUES " + tableValues);
@@ -204,7 +203,7 @@ public class DatabaseActions {
 	 * Displays (prints) a record from a Database table's result set
 	 * @param resultSet = The result set from the Database table to display
 	 */
-	private void displayRecord(ResultSet resultSet) throws SQLException {
+	private void display(ResultSet resultSet) throws SQLException {
 		ResultSetMetaData rsmd = resultSet.getMetaData();
 		do {
 			for (int index = 1; index <= rsmd.getColumnCount(); index++) {
@@ -229,7 +228,7 @@ public class DatabaseActions {
 		log.createLogEntry(selectStatementString + tableName);
 		System.out.println("\nHere are all records from the table \"" + tableName + "\":");
 		while(resultSet.next()) {
-			displayRecord(resultSet);
+			display(resultSet);
 		}
 	}
 	
@@ -246,7 +245,7 @@ public class DatabaseActions {
 	 */
 	public void printDBLog() {
 		System.out.println("\n" + this.logName + " contains the following SQL operations performed: ");
-		this.log.printLog(this.logName);
+		this.log.displayLog(this.logName);
 	}
 	
 }

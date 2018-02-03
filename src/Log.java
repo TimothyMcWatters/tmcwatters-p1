@@ -68,7 +68,7 @@ public class Log {
 	 * Prints log 
 	 * @param logName = The log files name to read/print
 	 */
-	public void printLog(String logName) {
+	public void displayLog(String logName) {
 		try {
 			inputStream = new Scanner(new FileInputStream(logName));
 		}
